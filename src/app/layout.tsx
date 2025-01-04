@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import QueryClientLocal from "@/providers/QueryClientLocal";
+import Link from "next/link";
 import "./globals.css";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const openSans = Open_Sans({
+    variable: "--font-open-sans",
     subsets: ["latin"],
 });
 
@@ -25,10 +21,30 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                <QueryClientLocal>{children}</QueryClientLocal>
+            <body className={`${openSans.className} antialiased bg-gray-100`}>
+                <QueryClientLocal>
+                    <div className="bg-gradient-to-br from-violet-700 to-lime-500 via-amber-400 h-screen w-screen flex justify-center items-center p-2">
+                        <main className="rounded-3xl flex w-full h-full bg-white shadow-md overflow-hidden">
+                            <aside className="sticky w-auto h-full flex flex-col justify-between items-center p-3 bg-slate-200 rounded-l-3xl">
+                                <div>Logo</div>
+                                <div className="flex flex-col gap-2">
+                                    <Link href="/">a</Link>
+                                    <Link href="/auth/sign-in">b</Link>
+                                </div>
+                                <div>ss</div>
+                            </aside>
+                            <section className="w-full h-full md:overflow-y-auto flex flex-col">
+                                <nav className="flex justify-between py-1 px-2 bg-slate-300 rounded-tr-3xl">
+                                    <div>
+                                        <h1>TITULO DE PAGINA</h1>
+                                    </div>
+                                    <div>sss</div>
+                                </nav>
+                                <div className="p-4">{children}</div>
+                            </section>
+                        </main>
+                    </div>
+                </QueryClientLocal>
             </body>
         </html>
     );
