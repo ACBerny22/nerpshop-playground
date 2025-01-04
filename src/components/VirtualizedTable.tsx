@@ -2,7 +2,7 @@
 "use client";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef } from "react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 function getNestedValue(obj: any, path: string): any {
     return path
@@ -17,12 +17,16 @@ export default function VirtualizedTable({
     data,
     columns,
     rowHeight,
+    onSelectionChange,
 }: {
-    data: any[] | undefined;
+    data: any[];
     columns: any[];
     rowHeight: number;
+    control: boolean;
+    onSelectionChange: (selectedRows: any[]) => void;
 }) {
     const parentRef = useRef(null);
+    const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
     const rowVirtualizer = useVirtualizer({
         count: data?.length ?? 0,
@@ -31,15 +35,42 @@ export default function VirtualizedTable({
         overscan: 5,
     });
 
-    const renderedColumns = useMemo(
-        () =>
-            columns.map((column, index) => (
-                <div key={index} className="">
+    const toggleRowSelection = (index: number) => {
+        if (!data) return;
+        const newSelectedRows = new Set(selectedRows);
+        if (newSelectedRows.has(index)) {
+            newSelectedRows.delete(index);
+        } else {
+            newSelectedRows.add(index);
+        }
+        setSelectedRows(newSelectedRows);
+        onSelectionChange(Array.from(newSelectedRows).map((idx) => data[idx]));
+    };
+
+    const renderedColumns = useMemo(() => {
+        return [
+            // Add a header for the checkbox column
+            <div key="checkbox">
+                <input
+                    type="checkbox"
+                    onChange={(e) => {
+                        const allSelected = e.target.checked;
+                        const newSelectedRows = allSelected
+                            ? new Set(data.map((_, index) => index))
+                            : new Set();
+                        setSelectedRows(newSelectedRows as Set<number>);
+                        onSelectionChange(allSelected ? data : []);
+                    }}
+                    checked={selectedRows.size === data.length}
+                />
+            </div>,
+            ...columns.map((column, index) => (
+                <div key={index} className="text-left">
                     {column.name}
                 </div>
             )),
-        [columns]
-    );
+        ];
+    }, [columns, data, selectedRows, onSelectionChange]);
 
     if (!data) {
         return <div>Loading...</div>;
@@ -48,25 +79,23 @@ export default function VirtualizedTable({
     return (
         <div
             role="table"
-            style={{
-                maxHeight: "100%", // Ensures it doesn't exceed the parent's height
-                display: "flex",
-                flexDirection: "column",
-            }}
-            className="bg-stone-100/80 rounded-xl px-2"
+            className="bg-stone-100/80 rounded-xl px-2 max-h-full flex flex-col"
         >
             <div
-                className="grid gap-4 w-full px-5 py-3 text-black font-bold sticky top-0 z-10 "
+                className="grid gap-4 w-full px-4 py-3 text-black font-bold sticky top-0 z-10 "
                 style={{
-                    gridTemplateColumns: `repeat(${columns.length}, 1fr)`,
+                    gridTemplateColumns: `20px repeat(${columns.length}, 1fr)`, // Checkbox column gets 20px
                 }}
             >
                 {renderedColumns}
             </div>
             <div
                 ref={parentRef}
-                className="overflow-auto h-full poem bg-white"
-                style={{ width: "100%" }}
+                className="max-h-full poem bg-white"
+                style={{
+                    width: "100%",
+                    minWidth: `${columns.length * 100}px`, // Ensure a minimum width for the table
+                }}
             >
                 <div
                     style={{
@@ -87,12 +116,27 @@ export default function VirtualizedTable({
                                     left: 0,
                                     width: "100%",
                                     transform: `translateY(${virtualRow.start}px)`,
-                                    gridTemplateColumns: `repeat(${columns.length}, 1fr)`,
+                                    gridTemplateColumns: `20px repeat(${columns.length}, 1fr)`, // Checkbox column gets 20px
                                 }}
                                 className="grid px-4 py-3 hover:bg-stone-200 cursor-pointer bg-white rounded-xl text-sm transition-all duration-200 ease-in-out"
                             >
+                                <div key="checkbox">
+                                    <input
+                                        type="checkbox"
+                                        onChange={() =>
+                                            toggleRowSelection(virtualRow.index)
+                                        }
+                                        checked={selectedRows.has(
+                                            virtualRow.index
+                                        )}
+                                    />
+                                </div>
                                 {columns.map((column, index) => (
-                                    <div key={index} role="cell">
+                                    <div
+                                        key={index}
+                                        role="cell"
+                                        className="text-left truncate overflow-hidden text-ellipsis"
+                                    >
                                         {getNestedValue(row, column.key)}
                                     </div>
                                 ))}

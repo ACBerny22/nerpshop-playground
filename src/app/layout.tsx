@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import QueryClientLocal from "@/providers/QueryClientLocal";
 import Link from "next/link";
 import "./globals.css";
+import Nav from "@/components/Nav";
 
 const openSans = Open_Sans({
     variable: "--font-open-sans",
@@ -34,12 +35,7 @@ export default function RootLayout({
                                 <div>ss</div>
                             </aside>
                             <section className="w-full h-full md:overflow-y-auto flex flex-col">
-                                <nav className="flex justify-between py-1 px-2 bg-slate-300 rounded-tr-3xl">
-                                    <div>
-                                        <h1>TITULO DE PAGINA</h1>
-                                    </div>
-                                    <div>sss</div>
-                                </nav>
+                                <Nav></Nav>
                                 <div className="p-4">{children}</div>
                             </section>
                         </main>

@@ -1,8 +1,10 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import VirtualizedTable from "@/components/VirtualizedTable";
+import useTitleStore from "@/stores/titleStore";
 
 export default function Home() {
+    useTitleStore.setState({ title: "Users" });
     const { data, isError, isLoading } = useQuery({
         queryKey: ["home"],
         queryFn: async () => {
@@ -11,8 +13,8 @@ export default function Home() {
             );
             const data = await response.json();
             console.log(data);
-            //return [...data, ...data, ...data, ...data, ...data];
-            return data;
+            return [...data, ...data, ...data, ...data, ...data];
+            //return data;
         },
     });
 
@@ -27,10 +29,17 @@ export default function Home() {
     }
 
     return (
-        <main className="flex flex-col gap-4 p-10 h-screen">
-            <h1 className="text-3xl font-bold">Users</h1>
+        <main className="flex flex-col gap-4 p-10 h-[90vh]">
+            {/* <div className="grid grid-cols-2 gap-4 h-full">
+                <div>
+                    <h1 className="text-3xl font-bold">Users</h1>
+                </div> */}
             <VirtualizedTable
-                data={data}
+                onSelectionChange={(selectedRows) => {
+                    console.log(selectedRows);
+                }}
+                data={data!}
+                control={true}
                 columns={[
                     { name: "Name", key: "name", minWidth: 200 },
                     { name: "Username", key: "username", minWidth: 200 },
@@ -38,9 +47,12 @@ export default function Home() {
                     { name: "Phone", key: "phone", minWidth: 200 },
                     { name: "Website", key: "website", minWidth: 200 },
                     { name: "City", key: "address.city", minWidth: 200 },
+                    { name: "Zip Code", key: "address.zipcode", minWidth: 200 },
+                    { name: "Street", key: "address.street", minWidth: 200 },
                 ]}
                 rowHeight={50}
             />
+            {/* </div> */}
         </main>
     );
 }
