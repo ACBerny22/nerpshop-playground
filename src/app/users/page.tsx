@@ -2,9 +2,19 @@
 import { useQuery } from "@tanstack/react-query";
 import VirtualizedTable from "@/components/VirtualizedTable";
 import useTitleStore from "@/stores/titleStore";
+import { useEffect, useState } from "react";
+
+interface User {
+    name: string;
+    username: string;
+    email: string;
+    phone: string;
+    website: string;
+    address: { city: string; zipcode: string; street: string };
+}
 
 export default function Home() {
-    useTitleStore.setState({ title: "Users" });
+    const [rows, setRows] = useState<User[]>([]);
     const { data, isError, isLoading } = useQuery({
         queryKey: ["home"],
         queryFn: async () => {
@@ -18,7 +28,14 @@ export default function Home() {
         },
     });
 
-    console.log(data);
+    useEffect(() => {
+        if (isLoading) return;
+        setRows(data!);
+    }, [data, isLoading]);
+
+    useEffect(() => {
+        useTitleStore.setState({ title: "Users" });
+    }, []);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -29,16 +46,19 @@ export default function Home() {
     }
 
     return (
-        <main className="flex flex-col gap-4 p-10 h-[90vh]">
-            {/* <div className="grid grid-cols-2 gap-4 h-full">
-                <div>
-                    <h1 className="text-3xl font-bold">Users</h1>
-                </div> */}
+        <main className="flex flex-col gap-4 h-[90vh]">
+            <div className="flex justify-between items-center mx-5">
+                <h1 className="tex font-semibold">Acciones</h1>
+                <button className="bg-[#172bde] rounded-full px-4 py-1 text-white">
+                    {" "}
+                    Nuevo Producto
+                </button>
+            </div>
             <VirtualizedTable
                 onSelectionChange={(selectedRows) => {
                     console.log(selectedRows);
                 }}
-                data={data!}
+                data={rows}
                 control={true}
                 columns={[
                     { name: "Name", key: "name", minWidth: 200 },
@@ -52,7 +72,6 @@ export default function Home() {
                 ]}
                 rowHeight={50}
             />
-            {/* </div> */}
         </main>
     );
 }

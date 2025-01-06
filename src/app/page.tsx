@@ -1,7 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import useTitleStore from "@/stores/titleStore";
 
 export default function Home() {
     const { data, isError, isLoading } = useQuery({
@@ -15,6 +16,10 @@ export default function Home() {
             return data;
         },
     });
+
+    useEffect(() => {
+        useTitleStore.setState({ title: "Home" });
+    }, []);
 
     const parentRef = useRef(null);
 
