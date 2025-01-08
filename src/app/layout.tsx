@@ -26,7 +26,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${openSans.className} antialiased bg-gray-100`}>
                 <QueryClientLocal>
-                    <div className="bg-gradient-to-br from-violet-700 to-lime-500 via-amber-400 h-screen w-screen flex justify-center items-center p-2">
+                    <div className="background-gradient h-screen w-screen flex justify-center items-center p-2">
                         <main className="rounded-3xl flex w-full h-full bg-white shadow-md overflow-hidden">
                             <aside className="sticky w-auto h-full flex flex-col justify-between items-center py-3 px-1 bg-white rounded-l-3xl">
                                 <img

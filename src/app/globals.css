@@ -24,3 +24,15 @@ body {
     overflow: auto;
     scrollbar-width: thin;
 }
+
+.background-gradient {
+    background: linear-gradient(
+        103.6deg,
+        #172bde -4.09%,
+        #a74dce 16.91%,
+        #e8547e 37.9%,
+        #ff761a 58.9%,
+        #ffce00 79.9%,
+        #6cd331 100.9%
+    );
+}

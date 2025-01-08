@@ -11,10 +11,7 @@ export default function Input({ name, label, fields, type, className }: any) {
             <input
                 key={key}
                 {...rest}
-                className={
-                    className ||
-                    "border p-2 rounded-xl dark:bg-zinc-800 dark:border-zinc-600"
-                }
+                className={className || "border p-1 rounded border-zinc-600"}
             />
             <p className="text-red-400 text-sm">{fields[name].errors}</p>
         </div>

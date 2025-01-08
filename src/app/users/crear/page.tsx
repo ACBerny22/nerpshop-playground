@@ -5,6 +5,7 @@ import { z } from "zod";
 import { parseWithZod } from "@conform-to/zod";
 import useTitleStore from "@/stores/titleStore";
 import { useActionState, useEffect } from "react";
+import FormCardBasic from "@/components/Forms/FormCardBasic";
 
 function submitAction(prevState: unknown, formData: FormData) {
     console.log(formData.get("name"));
@@ -16,6 +17,12 @@ function submitAction(prevState: unknown, formData: FormData) {
 
 export const schema = z.object({
     name: z
+        .string({ message: "El campo es obligatorio" })
+        .min(1, { message: "El campo es obligatorio" }),
+    lastName: z
+        .string({ message: "El campo es obligatorio" })
+        .min(1, { message: "El campo es obligatorio" }),
+    email: z
         .string({ message: "El campo es obligatorio" })
         .min(1, { message: "El campo es obligatorio" }),
 });
@@ -37,24 +44,92 @@ export default function Page() {
     }, []);
 
     return (
-        <div>
-            Crear
-            <FormProvider context={form.context}>
+        <FormProvider context={form.context}>
+            <div>
                 <form
                     action={formAction}
                     className="flex flex-col gap-4 p-4"
                     onSubmit={form.onSubmit}
                     id={form.id}
                 >
-                    <Input
-                        name="name"
-                        label="Name"
-                        type="text"
-                        fields={fields}
-                    />
-                    <button type="submit">Submit</button>
+                    <Bar />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-zinc-100 rounded-xl p-4 w-full flex flex-col gap-4">
+                            <FormCardBasic
+                                title="Datos del Usuario"
+                                containerClassName="flex flex-col gap-4 p-4"
+                            >
+                                <Input
+                                    name="name"
+                                    label="Name"
+                                    type="text"
+                                    fields={fields}
+                                />
+                            </FormCardBasic>
+                            <FormCardBasic
+                                title="Datos del Usuario"
+                                containerClassName="flex flex-col gap-4 p-4"
+                            >
+                                <Input
+                                    name="lastName"
+                                    label="Last Name"
+                                    type="text"
+                                    fields={fields}
+                                />
+                                <Input
+                                    name="email"
+                                    label="Email"
+                                    type="text"
+                                    fields={fields}
+                                />
+                            </FormCardBasic>
+                        </div>
+                        <div className="bg-zinc-100 rounded-xl p-4 w-full flex flex-col gap-4">
+                            <FormCardBasic
+                                title="Datos del Usuario"
+                                containerClassName="flex flex-col gap-4 p-4"
+                            >
+                                <Input
+                                    name="name"
+                                    label="Name"
+                                    type="text"
+                                    fields={fields}
+                                />
+                            </FormCardBasic>
+                            <FormCardBasic
+                                title="Datos del Usuario"
+                                containerClassName="flex flex-col gap-4 p-4"
+                            >
+                                <Input
+                                    name="lastName"
+                                    label="Last Name"
+                                    type="text"
+                                    fields={fields}
+                                />
+                                <Input
+                                    name="email"
+                                    label="Email"
+                                    type="text"
+                                    fields={fields}
+                                />
+                            </FormCardBasic>
+                        </div>
+                    </div>
                 </form>
-            </FormProvider>
+            </div>
+        </FormProvider>
+    );
+}
+
+function Bar() {
+    return (
+        <div className="flex justify-end w-full">
+            <button
+                type="submit"
+                className="bg-[#172bde] text-white px-4 py-1 rounded-full text-sm"
+            >
+                Guardar
+            </button>
         </div>
     );
 }
