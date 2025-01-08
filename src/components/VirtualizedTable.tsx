@@ -105,7 +105,7 @@ export default function VirtualizedTable({
     }
 
     return (
-        <div className="w-fit lg:w-full overflow-x-auto" id="container-table">
+        <div className="w-full overflow-x-auto" id="container-table">
             <div
                 role="table"
                 className="bg-stone-100/80 rounded-xl px-2 max-h-full flex flex-col"
