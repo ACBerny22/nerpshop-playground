@@ -1,6 +1,5 @@
 "use client";
 import useTitleStore from "@/stores/titleStore";
-import RoundedButton from "./RoundedButtont";
 import { ReactNode as React } from "react";
 export default function Nav() {
     const title = useTitleStore((state) => state.title);
@@ -19,11 +18,7 @@ export default function Nav() {
                     )}
                 </h1>
             </div>
-            <div>
-                <RoundedButton onClick={() => window.location.reload()}>
-                    s
-                </RoundedButton>
-            </div>
+            <div></div>
         </nav>
     );
 }
