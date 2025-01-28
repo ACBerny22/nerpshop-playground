@@ -53,6 +53,7 @@ export default function VirtualizedTable({
             <div key="checkbox">
                 <input
                     type="checkbox"
+                    className="accent-[#172bde]"
                     onChange={(e) => {
                         const allSelected = e.target.checked;
                         const newSelectedRows = allSelected
@@ -65,7 +66,10 @@ export default function VirtualizedTable({
                 />
             </div>,
             ...columns.map((column, index) => (
-                <div key={index} className="text-left flex gap-1 items-center">
+                <div
+                    key={index}
+                    className="text-left flex gap-1 items-center"
+                >
                     <svg
                         width="14"
                         height="14"
@@ -74,7 +78,11 @@ export default function VirtualizedTable({
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <g clipPath="url(#clip0_1721_1642)">
-                            <rect width="14" height="14" fill="white" />
+                            <rect
+                                width="14"
+                                height="14"
+                                fill="white"
+                            />
                             <path
                                 d="M13.998 14L13.998 0L0.00376225 -6.1171e-07L0.00376163 14L13.998 14Z"
                                 fill="#172BDE"
@@ -90,7 +98,11 @@ export default function VirtualizedTable({
                         </g>
                         <defs>
                             <clipPath id="clip0_1721_1642">
-                                <rect width="14" height="14" fill="white" />
+                                <rect
+                                    width="14"
+                                    height="14"
+                                    fill="white"
+                                />
                             </clipPath>
                         </defs>
                     </svg>
@@ -105,7 +117,10 @@ export default function VirtualizedTable({
     }
 
     return (
-        <div className="w-full overflow-x-auto" id="container-table">
+        <div
+            className="w-full overflow-x-auto"
+            id="container-table"
+        >
             <div
                 role="table"
                 className="bg-stone-100/80 rounded-xl px-2 max-h-full flex flex-col"
@@ -113,7 +128,7 @@ export default function VirtualizedTable({
                 <div
                     className="grid gap-4 w-full px-4 py-3 text-black font-bold sticky top-0 z-10 text-sm"
                     style={{
-                        gridTemplateColumns: `20px repeat(${columns.length}, 1fr)`, // Checkbox column gets 20px
+                        gridTemplateColumns: `24px repeat(${columns.length}, 1fr)`, // Checkbox column gets 24px
                     }}
                 >
                     {renderedColumns}
@@ -145,13 +160,14 @@ export default function VirtualizedTable({
                                         left: 0,
                                         width: "100%",
                                         transform: `translateY(${virtualRow.start}px)`,
-                                        gridTemplateColumns: `20px repeat(${columns.length}, 1fr)`, // Checkbox column gets 20px
+                                        gridTemplateColumns: `24px repeat(${columns.length}, 1fr)`, // Checkbox column gets 24px
                                     }}
                                     className="grid px-4 py-3 hover:bg-stone-200 cursor-pointer bg-white rounded-xl text-sm transition-all duration-200 ease-in-out"
                                 >
                                     <div key="checkbox">
                                         <input
                                             type="checkbox"
+                                            className="accent-[#172bde]"
                                             onChange={() =>
                                                 toggleRowSelection(
                                                     virtualRow.index

@@ -4,6 +4,18 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useRef } from "react";
 import useTitleStore from "@/stores/titleStore";
 
+function PostModal({ post, style }: { post: any; style: any }) {
+    return (
+        <div
+            className="bg-white rounded-xl p-4 shadow-lg border m-1"
+            style={style}
+        >
+            <h2 className="text-xl font-bold">{post.title}</h2>
+            <p className="text-sm">{post.body}</p>
+        </div>
+    );
+}
+
 export default function Home() {
     const { data, isError, isLoading } = useQuery({
         queryKey: ["home"],
@@ -49,12 +61,14 @@ export default function Home() {
                     height: `${rowVirtualizer.getTotalSize()}px`,
                     position: "relative",
                 }}
+                className="p-3"
             >
-                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                {rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
                     const post = data[virtualRow.index];
                     return (
-                        <div
+                        <PostModal
                             key={virtualRow.key}
+                            post={post}
                             style={{
                                 position: "absolute",
                                 top: 0,
@@ -62,11 +76,7 @@ export default function Home() {
                                 width: "100%",
                                 transform: `translateY(${virtualRow.start}px)`,
                             }}
-                            className="flex flex-col gap-4 px-4 py-2"
-                        >
-                            <div className="text-xl">{post.title}</div>
-                            <div className="text-sm">{post.body}</div>
-                        </div>
+                        ></PostModal>
                     );
                 })}
             </div>
