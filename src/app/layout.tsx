@@ -7,6 +7,7 @@ import Link from "next/link";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import CircleButton from "@/components/CircleButton";
+import "@/lib/validation";
 
 const openSans = Open_Sans({
     variable: "--font-open-sans",

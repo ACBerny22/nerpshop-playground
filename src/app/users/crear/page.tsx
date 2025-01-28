@@ -1,36 +1,32 @@
 "use client";
 import Input from "@/components/Forms/Input";
 import { useForm } from "@conform-to/react";
-import { z } from "zod";
+import z from "@/lib/validation";
 import { parseWithZod } from "@conform-to/zod";
 import useTitleStore from "@/stores/titleStore";
 import { useActionState, useEffect } from "react";
 import FormCardBasic from "@/components/Forms/FormCardBasic";
 import { useState } from "react";
 
-async function submitAction(prevState: unknown, formData: FormData) {
+export async function submitAction(prevState: unknown, formData: FormData) {
     // wait 2 seconds
     await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const submittedData = Object.fromEntries(formData.entries());
+
     return {
-        status: "success",
-        data: {
-            name: formData.get("name"),
-            lastName: formData.get("lastName"),
-            email: formData.get("email"),
+        status: "failure",
+        error: {
+            message: "Error al enviar el formulario",
         },
+        fieldData: submittedData,
     };
 }
 
-export const schema = z.object({
-    name: z
-        .string({ message: "El campo es obligatorio" })
-        .min(1, { message: "El campo es obligatorio" }),
-    lastName: z
-        .string({ message: "El campo es obligatorio" })
-        .min(1, { message: "El campo es obligatorio" }),
-    email: z
-        .string({ message: "El campo es obligatorio" })
-        .min(1, { message: "El campo es obligatorio" }),
+const schema = z.object({
+    name: z.string().min(4),
+    lastName: z.string().min(4),
+    email: z.string().min(4),
 });
 
 export default function Page() {
@@ -39,26 +35,21 @@ export default function Page() {
         null
     );
     const [resetId, setResetId] = useState("user-form");
-    const [defaultValue] = useState<{
-        name: string;
-        lastName: string;
-        email: string;
-    }>({
+    const [formData, setFormData] = useState<any>({
         name: "AaronDev",
         lastName: "Conley",
         email: "ssss@sss.com",
     });
 
-    console.log(lastResult);
-
     const [form, fields] = useForm({
+        lastResult: lastResult?.fieldData as any,
         onValidate({ formData }) {
             return parseWithZod(formData, { schema });
         },
         shouldValidate: "onBlur",
         shouldRevalidate: "onInput",
         id: resetId,
-        defaultValue: defaultValue,
+        defaultValue: lastResult?.fieldData || formData,
     });
 
     useEffect(() => {
@@ -73,7 +64,10 @@ export default function Page() {
                 onSubmit={form.onSubmit}
                 id={form.id}
             >
-                <Bar setResetId={setResetId} isPending={isPending} />
+                <Bar
+                    setResetId={setResetId}
+                    isPending={isPending}
+                />
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-zinc-100 rounded-xl p-4 w-full flex flex-col gap-4">
                         <FormCardBasic

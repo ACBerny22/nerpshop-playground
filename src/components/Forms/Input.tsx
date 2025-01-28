@@ -4,12 +4,13 @@
 import { getInputProps } from "@conform-to/react";
 
 export default function Input({ name, label, fields, type, className }: any) {
-    const { key, ...rest } = getInputProps(fields[name], { type: type });
+    const { key, defaultValue, ...rest } = getInputProps(fields[name], { type: type });
     return (
         <div className="flex flex-col gap-1">
             <span className="font-semibold ml-2">{label}</span>
             <input
                 key={key}
+                defaultValue={defaultValue}
                 {...rest}
                 className={className || "border p-1 rounded border-zinc-600"}
             />
