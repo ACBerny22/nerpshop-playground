@@ -1,27 +1,15 @@
 "use client";
 import Input from "@/components/Forms/Input";
-import { useForm } from "@conform-to/react";
 import z from "@/lib/validation";
-import { parseWithZod } from "@conform-to/zod";
 import useTitleStore from "@/stores/titleStore";
 import { useActionState, useEffect } from "react";
 import FormCardBasic from "@/components/Forms/FormCardBasic";
 import { useState } from "react";
-
-export async function submitAction(prevState: unknown, formData: FormData) {
-    // wait 2 seconds
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    const submittedData = Object.fromEntries(formData.entries());
-
-    return {
-        status: "failure",
-        error: {
-            message: "Error al enviar el formulario",
-        },
-        fieldData: submittedData,
-    };
-}
+import { useQuery } from "@tanstack/react-query";
+import FormWrapper from "@/components/Forms/FormWrapper";
+import DetailBar from "@/components/DetailBar";
+import Spinner from "@/components/Spinner";
+import { submitAction } from "@/app/actions/submitAction";
 
 const schema = z.object({
     name: z.string().min(4),
@@ -29,42 +17,50 @@ const schema = z.object({
     email: z.string().email(),
 });
 
+async function getData() {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return {
+        name: "Aaron",
+        lastName: "Conley",
+        email: "conley@harmony.com",
+    };
+}
+
 export default function Page() {
     const [lastResult, formAction, isPending] = useActionState(
         submitAction,
         null
     );
     const [resetId, setResetId] = useState("user-form");
-    const [formData, setFormData] = useState<any>({
-        name: "AaronDev",
-        lastName: "Conley",
-        email: "ssss@sss.com",
-    });
 
-    const [form, fields] = useForm({
-        lastResult: lastResult?.fieldData as any,
-        onValidate({ formData }) {
-            return parseWithZod(formData, { schema });
-        },
-        shouldValidate: "onBlur",
-        shouldRevalidate: "onInput",
-        id: resetId,
-        defaultValue: lastResult?.fieldData || formData,
+    const { data, isLoading } = useQuery({
+        queryKey: ["user"],
+        queryFn: getData,
     });
 
     useEffect(() => {
         useTitleStore.setState({ title: "Agregar Usuario" });
     }, []);
 
+    if (isLoading) {
+        return (
+            <div className="h-screen flex justify-center items-center">
+                <Spinner className="w-12 h-12"></Spinner>
+            </div>
+        );
+    }
+
     return (
         <div>
-            <form
-                action={formAction}
+            <FormWrapper
+                formAction={formAction}
                 className="flex flex-col gap-4 p-4"
-                onSubmit={form.onSubmit}
-                id={form.id}
+                resetId={resetId}
+                schema={schema}
+                lastResult={lastResult}
+                defaultValues={lastResult?.fieldData || data}
             >
-                <Bar
+                <DetailBar
                     setResetId={setResetId}
                     isPending={isPending}
                 />
@@ -78,7 +74,6 @@ export default function Page() {
                                 name="name"
                                 label="Name"
                                 type="text"
-                                fields={fields}
                             />
                         </FormCardBasic>
                         <FormCardBasic
@@ -89,13 +84,11 @@ export default function Page() {
                                 name="lastName"
                                 label="Last Name"
                                 type="text"
-                                fields={fields}
                             />
                             <Input
                                 name="email"
                                 label="Email"
                                 type="text"
-                                fields={fields}
                             />
                         </FormCardBasic>
                     </div>
@@ -105,33 +98,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
-    );
-}
-
-function Bar({
-    setResetId,
-    isPending,
-}: {
-    setResetId: (id: string) => void;
-    isPending: boolean;
-}) {
-    return (
-        <div className="flex justify-end w-full gap-2">
-            <button
-                type="button"
-                onClick={() => setResetId("user-form-" + Math.random())}
-                className="bg-zinc-100 text-black px-4 py-1 rounded-full text-sm"
-            >
-                Limpiar
-            </button>
-            <button
-                type="submit"
-                className="bg-[#172bde] text-white px-4 py-1 rounded-full text-sm"
-            >
-                {isPending ? "Guardando..." : "Guardar"}
-            </button>
+            </FormWrapper>
         </div>
     );
 }

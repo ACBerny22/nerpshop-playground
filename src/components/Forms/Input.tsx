@@ -2,9 +2,13 @@
 
 "use client";
 import { getInputProps } from "@conform-to/react";
+import React from "react";
+import { FieldsContext } from "./FormWrapper";
+
 
 export default function Input({ name, label, fields, type, className }: any) {
-    const { key, defaultValue, ...rest } = getInputProps(fields[name], { type: type });
+    const contextFields = React.useContext(FieldsContext);
+    const { key, defaultValue, ...rest } = getInputProps(contextFields[name], { type: type });
     return (
         <div className="flex flex-col gap-1">
             <span className="font-semibold ml-2">{label}</span>
@@ -14,7 +18,7 @@ export default function Input({ name, label, fields, type, className }: any) {
                 {...rest}
                 className={className || "border p-1 rounded border-zinc-600"}
             />
-            <p className="text-red-400 text-sm">{fields[name].errors}</p>
+            <p className="text-red-400 text-sm">{contextFields[name].errors}</p>
         </div>
     );
 }
