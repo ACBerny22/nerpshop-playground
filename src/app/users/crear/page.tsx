@@ -29,7 +29,7 @@ async function getData() {
 export default function Page() {
     const [lastResult, formAction, isPending] = useActionState(
         submitAction,
-        null
+        undefined
     );
     const [resetId, setResetId] = useState("user-form");
 

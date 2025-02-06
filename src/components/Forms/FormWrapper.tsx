@@ -17,9 +17,9 @@ export default function FormWrapper({
 }: {
     children: React.ReactNode;
     schema: any;
-    resetId: string;
+    resetId?: string;
     formAction: any;
-    defaultValues: any;
+    defaultValues?: any;
     className: string;
     lastResult: any;
 }) {
@@ -31,8 +31,8 @@ export default function FormWrapper({
         },
         shouldValidate: "onBlur",
         shouldRevalidate: "onInput",
-        id: resetId,
-        defaultValue: defaultValues,
+        ...(resetId && { resetId }),
+        ...(defaultValues && { defaultValues }),
     });
 
     return (

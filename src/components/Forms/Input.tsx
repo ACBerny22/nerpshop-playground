@@ -15,6 +15,7 @@ export default function Input({ name, label, fields, type, className }: any) {
             <input
                 key={key}
                 defaultValue={defaultValue}
+                placeholder="Escribe aqui"
                 {...rest}
                 className={className || "border p-1 rounded border-zinc-600"}
             />
