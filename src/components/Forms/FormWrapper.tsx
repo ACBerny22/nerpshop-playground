@@ -23,7 +23,6 @@ export default function FormWrapper({
     className: string;
     lastResult: any;
 }) {
-    console.log(defaultValues);
     const [form, fields] = useForm({
         lastResult: lastResult?.fieldData as any,
         onValidate({ formData }) {
@@ -31,8 +30,8 @@ export default function FormWrapper({
         },
         shouldValidate: "onBlur",
         shouldRevalidate: "onInput",
-        ...(resetId && { resetId }),
-        ...(defaultValues && { defaultValues }),
+        ...(resetId && { id: resetId }),
+        ...(defaultValues && { defaultValue: defaultValues }),
     });
 
     return (

@@ -29,7 +29,7 @@ async function getData() {
 export default function Page() {
     const [lastResult, formAction, isPending] = useActionState(
         submitAction,
-        undefined
+        null
     );
     const [resetId, setResetId] = useState("user-form");
 
@@ -37,6 +37,10 @@ export default function Page() {
         queryKey: ["user"],
         queryFn: getData,
     });
+
+    useEffect(() => {
+        console.log("lastResult: ", lastResult);
+    }, [lastResult]);
 
     useEffect(() => {
         useTitleStore.setState({ title: "Agregar Usuario" });

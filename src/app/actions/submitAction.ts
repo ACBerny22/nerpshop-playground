@@ -9,6 +9,9 @@ export async function submitAction(prevState: unknown, formData: FormData) {
         data: {
             message: "Datos guardados correctamente",
         },
+        fieldErrors: {
+            name: "Too bad."
+        },
         fieldData: submittedData,
     };
 }

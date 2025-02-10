@@ -12,8 +12,6 @@ async function login(prevState: unknown, formData: FormData) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const submittedData = Object.fromEntries(formData.entries());
 
-    console.log(submittedData);
-
     const a = {
         status: "success",
         data: {
