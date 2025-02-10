@@ -3,6 +3,7 @@
 import React from "react";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
+import dirtyChecker from "@/lib/dirtyChecker";
 
 export const FieldsContext = React.createContext<any>({});
 
@@ -14,6 +15,7 @@ export default function FormWrapper({
     defaultValues,
     lastResult,
     className,
+    dirtySetter,
 }: {
     children: React.ReactNode;
     schema: any;
@@ -22,13 +24,16 @@ export default function FormWrapper({
     defaultValues?: any;
     className: string;
     lastResult: any;
+    dirtySetter: any;
 }) {
     const [form, fields] = useForm({
         lastResult: lastResult?.fieldData as any,
         onValidate({ formData }) {
+            dirtySetter(dirtyChecker(formData, defaultValues, schema));
             return parseWithZod(formData, { schema });
         },
         shouldValidate: "onBlur",
+        shouldDirtyConsider: true,
         shouldRevalidate: "onInput",
         ...(resetId && { id: resetId }),
         ...(defaultValues && { defaultValue: defaultValues }),

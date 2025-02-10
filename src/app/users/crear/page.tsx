@@ -10,6 +10,7 @@ import FormWrapper from "@/components/Forms/FormWrapper";
 import DetailBar from "@/components/DetailBar";
 import Spinner from "@/components/Spinner";
 import { submitAction } from "@/app/actions/submitAction";
+import toast from "react-hot-toast";
 
 const schema = z.object({
     name: z.string().min(4),
@@ -32,6 +33,7 @@ export default function Page() {
         null
     );
     const [resetId, setResetId] = useState("user-form");
+    const [isDirty, setIsDirty] = useState(false);
 
     const { data, isLoading } = useQuery({
         queryKey: ["user"],
@@ -39,7 +41,13 @@ export default function Page() {
     });
 
     useEffect(() => {
-        console.log("lastResult: ", lastResult);
+        lastResult?.status === "success" && setIsDirty(false);
+        if (lastResult?.status === "error") {
+            toast.error(lastResult?.data?.message);
+        }
+        if (lastResult?.status === "success") {
+            toast.success(lastResult?.data?.message);
+        }
     }, [lastResult]);
 
     useEffect(() => {
@@ -62,11 +70,14 @@ export default function Page() {
                 resetId={resetId}
                 schema={schema}
                 lastResult={lastResult}
+                dirtySetter={setIsDirty}
                 defaultValues={lastResult?.fieldData || data}
             >
                 <DetailBar
                     setResetId={setResetId}
                     isPending={isPending}
+                    isDirty={isDirty}
+                    setIsDirty={setIsDirty}
                 />
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-zinc-100 rounded-xl p-4 w-full flex flex-col gap-4">

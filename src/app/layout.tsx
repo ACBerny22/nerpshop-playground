@@ -7,6 +7,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import "@/lib/validation";
 import Aside from "@/components/Aside";
+import { Toaster } from "react-hot-toast";
 
 const openSans = Open_Sans({
     variable: "--font-open-sans",
@@ -29,6 +30,10 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${openSans.className} antialiased bg-gray-100`}>
                 <QueryClientLocal>
+                    <Toaster
+                        position="bottom-left"
+                        reverseOrder={true}
+                    />
                     <div className="background-gradient h-screen w-screen flex justify-center items-center p-2">
                         <main className="rounded-3xl flex w-full h-full bg-white shadow-md overflow-hidden">
                             {session && <Aside></Aside>}
