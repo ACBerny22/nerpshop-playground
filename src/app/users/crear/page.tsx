@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import Input from "@/components/Forms/Input";
 import z from "@/lib/validation";
 import useTitleStore from "@/stores/titleStore";
@@ -9,8 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import FormWrapper from "@/components/Forms/FormWrapper";
 import DetailBar from "@/components/DetailBar";
 import Spinner from "@/components/Spinner";
-import { submitAction } from "@/app/actions/submitAction";
 import toast from "react-hot-toast";
+import parseResponse from "@/lib/responseParser";
 
 const schema = z.object({
     name: z.string().min(4),
@@ -28,27 +30,20 @@ async function getData() {
 }
 
 export default function Page() {
-    const [lastResult, formAction, isPending] = useActionState(
-        submitAction,
-        null
-    );
     const [resetId, setResetId] = useState("user-form");
     const [isDirty, setIsDirty] = useState(false);
+    const submitActionWithParams = submitAction.bind(null, {
+        setIsDirty,
+    });
+    const [lastResult, formAction, isPending] = useActionState(
+        submitActionWithParams,
+        null
+    );
 
     const { data, isLoading } = useQuery({
         queryKey: ["user"],
         queryFn: getData,
     });
-
-    useEffect(() => {
-        lastResult?.status === "success" && setIsDirty(false);
-        if (lastResult?.status === "error") {
-            toast.error(lastResult?.data?.message);
-        }
-        if (lastResult?.status === "success") {
-            toast.success(lastResult?.data?.message);
-        }
-    }, [lastResult]);
 
     useEffect(() => {
         useTitleStore.setState({ title: "Agregar Usuario" });
@@ -85,11 +80,7 @@ export default function Page() {
                             title="Datos del Usuario"
                             containerClassName="flex flex-col gap-4 p-4"
                         >
-                            <Input
-                                name="name"
-                                label="Name"
-                                type="text"
-                            />
+                            <Input name="name" label="Name" type="text" />
                         </FormCardBasic>
                         <FormCardBasic
                             title="Datos del Usuario"
@@ -100,11 +91,7 @@ export default function Page() {
                                 label="Last Name"
                                 type="text"
                             />
-                            <Input
-                                name="email"
-                                label="Email"
-                                type="text"
-                            />
+                            <Input name="email" label="Email" type="text" />
                         </FormCardBasic>
                     </div>
                     <div className="bg-zinc-100 rounded-xl p-4 w-full flex flex-col gap-4">
@@ -116,4 +103,37 @@ export default function Page() {
             </FormWrapper>
         </div>
     );
+}
+
+export async function submitAction(
+    params: { setIsDirty: any },
+    prevState: unknown,
+    formData: FormData
+) {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const submittedData = Object.fromEntries(formData.entries());
+
+    // Simulate a response
+    const res = {
+        status: "success",
+        data: {
+            message: "Registro actualizado.",
+        },
+    };
+    // const res = {
+    //     status: "error",
+    //     data: {
+    //         message: "Error al guardar el registro.",
+    //     },
+    // };
+
+    if (res?.status === "error") {
+        toast.error(res?.data?.message);
+    }
+    if (res?.status === "success") {
+        params.setIsDirty(false);
+        toast.success(res?.data?.message);
+    }
+
+    return parseResponse(res, submittedData);
 }

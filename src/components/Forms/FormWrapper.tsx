@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 import React from "react";
 import { useForm } from "@conform-to/react";
@@ -29,10 +30,12 @@ export default function FormWrapper({
     const [form, fields] = useForm({
         lastResult: lastResult?.fieldData as any,
         onValidate({ formData }) {
-            dirtySetter(dirtyChecker(formData, defaultValues, schema));
+            if (defaultValues) {
+                dirtySetter(dirtyChecker(formData, defaultValues, schema));
+            }
             return parseWithZod(formData, { schema });
         },
-        shouldValidate: "onBlur",
+        shouldValidate: "onInput",
         shouldDirtyConsider: true,
         shouldRevalidate: "onInput",
         ...(resetId && { id: resetId }),

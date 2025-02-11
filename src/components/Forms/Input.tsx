@@ -8,7 +8,6 @@ import { FieldsContext } from "./FormWrapper";
 export default function Input({
     name,
     label,
-    fields,
     type,
     className,
     apiErrors,

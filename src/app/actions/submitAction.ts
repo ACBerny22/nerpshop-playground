@@ -6,13 +6,13 @@ export async function submitAction(prevState: unknown, formData: FormData) {
     const submittedData = Object.fromEntries(formData.entries());
 
     // Simulate a response
-    let response = {
+    const response = {
         status: "success",
         data: {
             message: "Registro actualizado.",
         },
     };
-    let response2 = {
+    const response2 = {
         status: "error",
         data: {
             message: "Error al guardar el registro.",
