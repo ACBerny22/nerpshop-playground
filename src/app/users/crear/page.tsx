@@ -13,6 +13,7 @@ import DetailBar from "@/components/DetailBar";
 import Spinner from "@/components/Spinner";
 import parseResponse from "@/lib/responseParser";
 import Select from "@/components/Forms/Select";
+import { useQueryClient } from "@tanstack/react-query";
 
 const schema = z.object({
     name: z.string().min(4),
@@ -30,10 +31,22 @@ async function getData() {
         role: 2,
     };
 }
+async function getList() {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return [
+        {
+            name: "Aaron",
+            lastName: "Conley",
+            email: "conley@harmony.com",
+            role: 2,
+        },
+    ];
+}
 
 export default function Page() {
     const [resetId, setResetId] = useState("user-form");
     const [isDirty, setIsDirty] = useState(false);
+    const queryClient = useQueryClient();
 
     const [lastResult, formAction, isPending] = useActionState(
         submitAction.bind(null, {
@@ -47,6 +60,19 @@ export default function Page() {
         queryKey: ["user"],
         queryFn: getData,
     });
+    const { data: listData } = useQuery({
+        queryKey: ["list"],
+        queryFn: getList,
+    });
+
+    useEffect(() => {
+        if (!lastResult) return;
+        if (lastResult.status == "success") {
+            queryClient.setQueryData(["list"], (oldList: any) => {
+                return [...oldList, lastResult.fieldData];
+            });
+        }
+    }, [lastResult, queryClient]);
 
     useEffect(() => {
         useTitleStore.setState({ title: "Agregar Usuario" });
@@ -110,6 +136,10 @@ export default function Page() {
                         <div>
                             <pre>{JSON.stringify(lastResult, null, 2)}</pre>
                         </div>
+                        <>
+                            ListData:
+                            <pre>{JSON.stringify(listData, null, 2)}</pre>
+                        </>
                     </div>
                 </div>
             </FormWrapper>
