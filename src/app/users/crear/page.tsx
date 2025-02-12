@@ -11,7 +11,6 @@ import { useQuery } from "@tanstack/react-query";
 import FormWrapper from "@/components/Forms/FormWrapper";
 import DetailBar from "@/components/DetailBar";
 import Spinner from "@/components/Spinner";
-import toast from "react-hot-toast";
 import parseResponse from "@/lib/responseParser";
 import Select from "@/components/Forms/Select";
 
@@ -19,7 +18,7 @@ const schema = z.object({
     name: z.string().min(4),
     lastName: z.string().min(4),
     email: z.string().email(),
-    role: z.coerce.number().transform((val) => Number(val)),
+    role: z.number().min(1),
 });
 
 async function getData() {
@@ -35,11 +34,12 @@ async function getData() {
 export default function Page() {
     const [resetId, setResetId] = useState("user-form");
     const [isDirty, setIsDirty] = useState(false);
-    const submitActionWithParams = submitAction.bind(null, {
-        setIsDirty,
-    });
+
     const [lastResult, formAction, isPending] = useActionState(
-        submitActionWithParams,
+        submitAction.bind(null, {
+            setIsDirty,
+            schema: schema,
+        }),
         null
     );
 
@@ -83,11 +83,7 @@ export default function Page() {
                             title="Datos del Usuario"
                             containerClassName="flex flex-col gap-4 p-4"
                         >
-                            <Input
-                                name="name"
-                                label="Name"
-                                type="text"
-                            />
+                            <Input name="name" label="Name" type="text" />
                         </FormCardBasic>
                         <FormCardBasic
                             title="Datos del Usuario"
@@ -98,11 +94,7 @@ export default function Page() {
                                 label="Last Name"
                                 type="text"
                             />
-                            <Input
-                                name="email"
-                                label="Email"
-                                type="text"
-                            />
+                            <Input name="email" label="Email" type="text" />
                             <Select
                                 name="role"
                                 label="Role"
@@ -126,12 +118,11 @@ export default function Page() {
 }
 
 export async function submitAction(
-    params: { setIsDirty: any },
+    params: { setIsDirty: any; schema: any },
     prevState: unknown,
     formData: FormData
 ) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    const submittedData = Object.fromEntries(formData.entries());
 
     // Simulate a response
     const res = {
@@ -140,12 +131,6 @@ export async function submitAction(
             message: "Registro actualizado.",
         },
     };
-    // const res = {
-    //     status: "error",
-    //     data: {
-    //         message: "Error al guardar el registro.",
-    //     },
-    // };
 
-    return parseResponse(res, submittedData, params.setIsDirty);
+    return parseResponse(res, formData, params.setIsDirty, schema);
 }
