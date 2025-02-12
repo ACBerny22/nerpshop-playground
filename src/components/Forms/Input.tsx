@@ -24,7 +24,7 @@ export default function Input({
                 defaultValue={defaultValue}
                 //placeholder="Escribe aqui"
                 {...rest}
-                className={className || "border p-1 rounded border-zinc-600"}
+                className={className || "border p-2 rounded border-zinc-600"}
             />
             <p className="text-red-400 text-sm">{contextFields[name].errors}</p>
             <p className="text-red-400 text-sm">{apiErrors && apiErrors[name]}</p>

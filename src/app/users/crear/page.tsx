@@ -13,11 +13,13 @@ import DetailBar from "@/components/DetailBar";
 import Spinner from "@/components/Spinner";
 import toast from "react-hot-toast";
 import parseResponse from "@/lib/responseParser";
+import Select from "@/components/Forms/Select";
 
 const schema = z.object({
     name: z.string().min(4),
     lastName: z.string().min(4),
     email: z.string().email(),
+    role: z.coerce.number().transform((val) => Number(val)),
 });
 
 async function getData() {
@@ -26,6 +28,7 @@ async function getData() {
         name: "Aaron",
         lastName: "Conley",
         email: "conley@harmony.com",
+        role: 2,
     };
 }
 
@@ -80,7 +83,11 @@ export default function Page() {
                             title="Datos del Usuario"
                             containerClassName="flex flex-col gap-4 p-4"
                         >
-                            <Input name="name" label="Name" type="text" />
+                            <Input
+                                name="name"
+                                label="Name"
+                                type="text"
+                            />
                         </FormCardBasic>
                         <FormCardBasic
                             title="Datos del Usuario"
@@ -91,7 +98,20 @@ export default function Page() {
                                 label="Last Name"
                                 type="text"
                             />
-                            <Input name="email" label="Email" type="text" />
+                            <Input
+                                name="email"
+                                label="Email"
+                                type="text"
+                            />
+                            <Select
+                                name="role"
+                                label="Role"
+                                type="number"
+                                options={[
+                                    { label: "Admin", value: 1 },
+                                    { label: "Usuario", value: 2 },
+                                ]}
+                            ></Select>
                         </FormCardBasic>
                     </div>
                     <div className="bg-zinc-100 rounded-xl p-4 w-full flex flex-col gap-4">
@@ -127,13 +147,5 @@ export async function submitAction(
     //     },
     // };
 
-    if (res?.status === "error") {
-        toast.error(res?.data?.message);
-    }
-    if (res?.status === "success") {
-        params.setIsDirty(false);
-        toast.success(res?.data?.message);
-    }
-
-    return parseResponse(res, submittedData);
+    return parseResponse(res, submittedData, params.setIsDirty);
 }
