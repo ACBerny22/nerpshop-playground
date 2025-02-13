@@ -136,11 +136,18 @@ export default function Page() {
                         <div>
                             <pre>{JSON.stringify(lastResult, null, 2)}</pre>
                         </div>
-                        <>
+                        {/* <>
                             ListData:
                             <pre>{JSON.stringify(listData, null, 2)}</pre>
-                        </>
+                        </> */}
                     </div>
+                </div>
+                <div>
+                    {listData?.map((item, i) => (
+                        <p key={i} className="p-2 shadow rounded">
+                            {item.name} {item.lastName}
+                        </p>
+                    ))}
                 </div>
             </FormWrapper>
         </div>
@@ -162,5 +169,5 @@ export async function submitAction(
         },
     };
 
-    return parseResponse(res, formData, params.setIsDirty, schema);
+    return parseResponse(res, formData, schema, params.setIsDirty);
 }

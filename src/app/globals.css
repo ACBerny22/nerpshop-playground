@@ -37,11 +37,27 @@ body {
     );
 }
 
-input[type=checkbox] {
-
+input[type="checkbox"] {
     -ms-transform: scale(1.5); /* IE */
     -moz-transform: scale(1.5); /* FF */
     -webkit-transform: scale(1.5); /* Safari and Chrome */
     -o-transform: scale(1.5); /* Opera */
-     padding: 10px;
-   }
+    padding: 10px;
+}
+
+dialog[open] {
+    animation: fadein 500ms ease-in forwards;
+    transform: translateX(-100%);
+    left: 99%;
+    top: 90%;
+    margin: 0; /* `margin: auto;` is the default. */
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

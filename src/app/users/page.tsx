@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import VirtualizedTable from "@/components/VirtualizedTable";
 import useTitleStore from "@/stores/titleStore";
 import { useEffect, useState } from "react";
+import ModalForm from "@/components/ModalForm";
+import Input from "@/components/Forms/Input";
 
 interface User {
     name: string;
@@ -15,6 +17,8 @@ interface User {
 
 export default function Home() {
     const [rows, setRows] = useState<User[]>([]);
+    const [open, setOpen] = useState(false);
+
     const { data, isError, isLoading } = useQuery({
         queryKey: ["home"],
         queryFn: async () => {
@@ -22,8 +26,8 @@ export default function Home() {
                 "https://jsonplaceholder.typicode.com/users"
             );
             const data = await response.json();
-            return [...data, ...data, ...data, ...data, ...data];
-            //return data;
+            //return [...data, ...data, ...data, ...data, ...data];
+            return data;
         },
     });
 
@@ -68,9 +72,22 @@ export default function Home() {
 
     return (
         <main className="flex flex-col gap-4 h-[90vh]">
+            <ModalForm
+                openModal={open}
+                closeModal={() => setOpen(false)}
+                onSubmit={()=> {
+
+                }}
+            >
+                <Input name="lastName" label="Last Name" type="text" />
+                <Input name="email" label="Email" type="text" />
+            </ModalForm>
             <div className="flex justify-between items-center mx-5">
                 <h1 className="tex font-semibold">Acciones</h1>
-                <button className="bg-[#172bde] rounded-full px-4 py-1 text-white text-sm font-semibold">
+                <button
+                    onClick={() => setOpen(true)}
+                    className="bg-[#172bde] rounded-full px-4 py-1 text-white text-sm font-semibold"
+                >
                     Nuevo Producto
                 </button>
             </div>

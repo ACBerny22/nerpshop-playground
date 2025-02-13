@@ -5,8 +5,8 @@ import { parseWithZod } from "@conform-to/zod";
 export default function parseResponse(
     response: any,
     fieldData: FormData,
-    setIsDirty: (state: boolean) => void,
-    schema: any
+    schema: any,
+    setIsDirty?: (state: boolean) => void,
 ) {
     const validation = parseWithZod(fieldData, { schema });
     let fields;

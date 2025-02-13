@@ -25,7 +25,7 @@ export default function FormWrapper({
     defaultValues?: any;
     className: string;
     lastResult: any;
-    dirtySetter: any;
+    dirtySetter?: any;
 }) {
     const [form, fields] = useForm({
         lastResult: lastResult?.fieldData as any,
